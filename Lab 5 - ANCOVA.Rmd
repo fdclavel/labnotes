@@ -1,0 +1,63 @@
+---
+title: "Lab 5 - ANCOVA"
+author: "Fred Clavel"
+date: "February 12, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+---
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.green { background-color:#e6ffd0; border-radius: 5px; padding: 20px;}
+div.red { background-color:#ffe6f0; border-radius: 5px; padding: 20px;}
+div.warn { background-color:#ee1111; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px;}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+## Setting up ANCOVA in R
+
+ANCOVA can involved mixed effects or not, but they are always nested designs. We simply collapse the design into an analysis that involves the two highest order levels.
+
+```{r}
+d <- read.csv(file="Coral_interaction_experiment.csv", header=T, sep=",")
+library(DT)
+datatable(d)
+
+```
+
+<br>
+<div class = "warn">
+
+PROTIP: You should only use `aov` for balanced designs. For **unbalanced designs** you should use `lm`, `lme`,  or `nlme` procedures. As an alternative, you can also use the `anova` function and specify that you do NOT want to run a Type I (i.e., balanced design) ANOVA.
+
+</div>
+<br>
+
+```{r}
+#Specifying and using mixed effects:
+
+#use the nlme package for an unbalanced design:
+library(nlme)
+
+#this specifies that size is the outcome, predicted by site, with a random effect of transect)
+#model_EXAMPLE <- lme(fixed=size~site, random=~1|tran, data=d)
+
+#test these data using a similar approach
+model2 <- lme(fixed=growth~treatment, 
+              random=~1|tank, data=d)
+summary(model2)
+```
+<br>
+We can also test the normality of groups assumption using the shapiro test. You should run this test at the **lowest level of grouping of your data.**  You can use the `tapply` function to run a test based on some grouping fairly quickly.
+<br>
+```{r}
+#conduct a shapiro test on growth, grouped by the list of tank values.
+
+tapply(d$growth, list(d$tank), shapiro.test)
+```
+

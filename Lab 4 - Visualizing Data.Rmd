@@ -1,0 +1,95 @@
+---
+title: "Lab 4 - Visualizing data"
+author: "Fred Clavel"
+date: "February 5, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+---
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.green { background-color:#e6ffd0; border-radius: 5px; padding: 20px;}
+div.red { background-color:#ffe6f0; border-radius: 5px; padding: 20px;}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+***
+
+#### HW2 - General Notes and Questions:
+<br>
+**Steps for conducting statistical tests:**
+1. Test assumptions
+2. Run your tests
+3. Interpret the results
+4. Visualize (optional)
+
+
+#### Boxplots
+
+Boxplots are useful for getting an idea of the variability of your data by group. **They DO NOT show you group means - the measures of central tendency captured are *medians.* **
+
+The outer edges of the boxes are the Q1 upper and Q3 lower boundaries (in other words the 25th and 75th percentiles, or more simply **the middle 50%**), while the tails of the boxes show the outer ends of the normal range (the 1st and 99th percentiles). Any extreme values are represented as dots beyond the normal range.
+
+#### Mean plots
+
+Mean plots are analogous to bar charts of means, except they show the raw data around each mean. The error bars can represent the SE of the means or CIs around the estimates of each mean. It is important to know which statistic is being represented
+
+***
+
+### Examples
+<div class="blue">
+
+Use the mtcars data set as an example. It is embedded in base R and in ggplot
+
+</div>
+
+
+Call the data:
+```{r}
+library(ggplot2)
+data("mtcars")
+```
+
+We can use the hist() function to do a quick and dirty visualization of mpg.
+
+```{r}
+hist(mtcars$mpg)
+```
+
+We can also generate box plots using base R or ggplot:
+
+```{r}
+boxplot(mtcars$mpg~mtcars$cyl, ylab="Miles per Gallon", xlab="Cylinder Type")
+
+#using ggplot
+#NOTE --- you need to add "group=" if your groups are numerically coded****
+
+ggplot(mtcars, aes(group=cyl, x=cyl, y=mpg))+ 
+  geom_boxplot(fill="gray") + 
+  labs(title ="MPG by Cylinder Number", x= "Miles per Gallon", y = "Cylinder Type")+
+  theme_classic()
+
+```
+
+We can also create a **Means plot:**
+
+```{r}
+#using base R
+#pch =""  <- defines the shape of the data points in the plot 
+plot(x=mtcars$cyl, y=mtcars$mpg, ylim=c(0,35), xlim=c(4,8),
+     pch=19)
+
+#Getting the CIs for the means in base R is absolutely brutal. don't bother. use ggplot.
+
+ggplot(mtcars, aes(x=cyl, y=mpg)) +
+  geom_point(shape=19, size=3)+
+  geom_errorbar(aes(ymin=(mean(mtcars$mpg))-1.96*(se(mtcars$mpg)), ymax=(mean(mtcars$mpg))+1.96*(se(mtcars$mpg)) ))
+
+
+```
+

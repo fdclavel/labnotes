@@ -1,0 +1,209 @@
+---
+title: "Stats Lab 9 - Final Exam Notes"
+author: "Fred Clavel"
+date: "March 12, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+
+---
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.green { background-color:#e6ffd0; border-radius: 5px; padding: 20px;}
+div.red { background-color:#ffe6f0; border-radius: 5px; padding: 20px;}
+div.warn { background-color:#ee1111; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px; font-variant:small-caps}
+div.safe { background-color:#008800; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px}
+div.data {background-color:#ddddee; border-radius: 5px; padding: 20px; font-family:monospace}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=F, message=F)
+```
+***
+### *From the word document:*
+***
+
+**SIO 272: Advanced Statistical Techniques**
+**Winter 2019**
+**Final Exam** 
+
+*Due on 22 March 2019 ¬(send to kblincow@ucsd.edu)*
+
+<div class="safe">
+**1	Provide a study design that fits the structure of the following statistical tests. For each, describe the null hypothesis and what rejection of the null hypothesis tells you. **
+
+	Multiple regression
+	One-sample t-test
+	Linear regression
+	Logistic regression
+	Correlation analysis
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+
+**2	Define the statistical independence and pseudoreplication. **
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+**3	Multiple Choice (circle the better answer):**
+
+
+	(True or False) Residuals measure the difference between predicted and observed values in correlation analysis. 
+
+	(True or False) Type I error occurs when one incorrectly rejects the null hypothesis.
+
+	(True or False) Regression analysis assumes that the response variable is normally distributed around the expected value ( ).
+
+	(True or False) There are no assumptions made about the distribution of the explanatory variable (along the x-axis) in a linear regression.  
+
+	(True or False) Non-parametric tests are typically more powerful than parametric tests because they increase the probability that you will reject a false null hypothesis. 
+
+	(True or False) Committing the statistical error of pseudoreplication results in increased chances of committing a type I error. 
+
+	(True or False) For a normal distribution, about two-thirds of individuals are within one standard deviation of the mean. 
+
+	 (True or False) The correlation coefficient r ranges from -∞ (maximum negative correlation) to 0 (no correlation) to ∞ (maximum positive correlation). 
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+
+4	Alan wishes to examine differences in coral cover in relation to water quality. In Hawaii he finds a bay that decreases in water quality from north to south. He defines three regions: upper, middle and lower bay. He then quantifies coral cover of the regions using 5 sites within each region. Within each site, he selects 8 random transects along which he estimates one value coral cover (in units of percent cover of the benthos). He chooses the sites within region and transects within sites based upon randomly generated GPS points. Back at the lab Alan does the following analysis:
+
+	a) He plans to run a two-way ANOVA, with the factors Region (fixed factor with three levels) and Site (fixed factor with five levels). He employs a balanced design with replication of eight transects in each combination of treatments. Articulate the null and alternate hypotheses, given this statistical design. 
+
+	b) Comment on his approach. Does his statistical analysis match his study design? If not, provide an appropriate statistical design, including information on null and alternative hypotheses and the potential outcomes (with interpretation) of the test.
+
+	c) The data that Alan collected are available in the file ‘coral_data.csv’. Plot the data to visualize the data in meaningful ways.
+
+	d) Perform the appropriate statistical test on the data. Recall the importance of checking for the fit of assumptions and responding to violations. 
+
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+**5	Consider two groups of sea gulls living on the beach in front of SIO. You notice that one group spends all of its time feeding within the outflow from the SIO aquarium facility, and one group spends all of its time feeding on lunch leftovers from beach walkers. You want to test whether the two groups have different levels of body fat as a function of foraging strategy.** 
+
+	a) Assuming that body fat is a continuous variable and that the estimates of body fat are normally distributed, what statistical test would you use to compare estimates of the mean? Provide the null hypothesis, alternate hypothesis, proposed statistical test to test the null, and describe the null distribution.
+
+*T test or a one-way anova with two groups – either provides the same answer*
+
+	b) You sample 10 birds from each population, and you aim to complete the statistical test. However, like any good field biologist, you also collect information on likely covariates to body fat. In this case, the literature suggests that larger birds tend to have more fat, and that this relationship is linear on average. How can you test an analogous hypothesis as from a) while accounting for this potential covariate?
+
+*Use ANCOVA (or multiple regression)*
+
+	c) Describe the method for conducting the test in b), with rationale for each step of the statistical test. 
+
+	d) Using the data below, conduct the statistical test and provide a statistically justified conclusion.
+
+<div class="data">
+# Create two populations based on foraging location
+population = as.factor (c(ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺoutflowʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ, ʺleftoverʺ) )
+
+# Body size in units of height (in decimeters)
+size = c(1.60, 2.60, 0.73, 0.88, 3.50, 2.60, 0.63, 1.20, 4.80, 4.90, 4.90, 3.60, 3.60, 4.00, 4.90, 1.30, 3.00, 2.10, 2.00, 0.55)    
+
+# Body fat composition (in units of % body mass)
+body_fat = c(9.12, 8.00, 6.22, 8.54, 9.85, 4.50, 7.37, 8.52, 11.20, 12.40, 18.80, 10.90, 16.80, 13.10, 15.90, 9.37, 12.60, 14.60, 8.54, 12.30)
+</div>
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+**6	Along an archipelago, a biologist measures the concentration of lead (Pb) both in the liver of a species of fish and directly in the environment. You complete this work by arriving at a location, recording the coordinates (in ‘x’ and ‘y’ coordinates), catching some fish and collecting a sample of water for chemical analysis. The data are presented in the file ‘spatial_Pb_data.csv’. **
+
+	a) You are concerned that there might be similarity of the Pb concentrations as a function of spatial proximity (closer sites might have more similar Pb concentrations). What test can you perform? (Hint:  I have a friend named Moran who might help…)  
+
+*Spatial autocorrelation test (Moran’s I)*
+
+	b) Perform this test individually for the samples from the fish and the samples of water. Are the results similar? Is there spatial autocorrelation in either set of data?
+
+
+
+	c) Provide graphical depictions of the autocorrelation for each set of data and interpret.
+
+
+	You are interested in testing whether Pb concentration in the water (measured with low error) affects concentrations in fish tissue. Perform the appropriate analysis, accounting for effects of autocorrelation (if present).
+
+Sounds like multiple regression
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+**7	The same biologist now runs an experiment in the wet lab. He measures the concentration of lead (Pb) in the blood of a random sample of fish in his tank every week over the course of one year. The data are provided in the file ‘temporal_Pb_data.csv’.**
+
+	a) Is there temporal patterning to the concentrations of Pb in the fish samples? Provide a temporal correlogram to explore this question. (Hint: The autocorrelation coefficient function can help here).
+
+	b) After your analysis, you learn that the biologist has systematically added Pb to the fish food during the year. From the pattern of temporal correlation, can you guess the time interval at which he systematically changed the Pb concentration?
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+**8	The territorial parrotfish, Chlorurus microrhinos lives on shallow coral reefs where it maintains small home ranges inside which it forages for algae, leaving behind characteristic clusters of bite scars. In 2015 a student used telemetry data to map the home range of an adult Chlorurus microrhinos at Palmyra atoll. Inside each plot they then located 20 bite clusters, counted the number of bites, and measured the distance of each cluster to the center of the home range. These data can be found in the file ‘Parrotfish_bites.csv’. The student hypothesized that these bite clusters also mark territory boundaries and expects to find more bites in clusters located further from the center of the home range.** 
+
+	a) Describe a model and conduct a test that could be used to address this hypothesis. 
+
+*These are count data – use Poisson *
+
+	b) Plot the data along with the expected values from the model.
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+
+**9	A group of scientists and conservation practitioners teamed up to ask whether the biomass density of fishes around the island of Curacao could be predicted by a suite of site-specific characteristics. The potential predictors included elements of the anthropogenic, oceanographic, and biological context. The data are presented in the file ‘Fish_biomass.csv’, and includes elements of the site metadata in addition to the potential predictors and the response variable ('log10_fish_biomass').**
+
+*Model fitting question*
+
+	a) Conduct the global test to assess whether the combination of all potential predictors holds statistically meaningful power in describing variation in fish biomass.
+
+	b) Based on the output from the full model, confirm that the assumptions of your statistical test are supported.
+
+
+	c) The conservation practitioners asked the scientists whether there is a simpler model that contains the most relative predictive power of estimated fish biomass. Please provide these practitioners with your preferred model.
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+**10	 Suppose a drug test is 95% sensitive and 99% specific. That is, the test will produce 95% true positive results for drug users and 99% true negative results for non-drug users. Suppose that 0.5% of people are users of the drug. If a randomly selected individual tests positive, what is the probability he or she is a user?**
+
+*This is based on the GMR and Bayesian stuff from March 12 lecture.*
+
+</div>
+<br>
+***
+<br>
+<div class="safe">
+
+**11	Suppose a linear model (fitted with three parameters) has a maximum likelihood score of 132.2 and a saturating model (fitted with three parameters) has a maximum likelihood score of 136.2 (both scores are negative log likelihood values). Suppose that you have no difference in expectation about which model fits the data better. What is the probability of the better-fitting model given the data, when compared to the ‘universe’ of only these two models? When comparing these two models, would you consider concluding that one is ‘significantly’ better at describing the data? If so, why?**
+
+</div>
+

@@ -1,0 +1,115 @@
+---
+title: "Stats Lab 6 - ANCOVA"
+author: "Fred Clavel"
+date: "February 19, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+
+---
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.green { background-color:#e6ffd0; border-radius: 5px; padding: 20px;}
+div.red { background-color:#ffe6f0; border-radius: 5px; padding: 20px;}
+div.warn { background-color:#ee1111; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px; font-variant:small-caps}
+div.safe { background-color:#11dd11; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px; font-variant:small-caps}
+div.data {background-color:#ddddee; border-radius: 5px; padding: 20px; font-family:monospace}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=F, message=F)
+```
+
+Conducting ANCOVA in R.
+
+```{r}
+#packages mounting
+
+
+
+
+```
+
+<div class="warn">
+###SCENARIO: Mars Attacks! 
+
+We need to know whether martians are hostile or not. Theory - tone of communication relates to the hostility metric, but the intelligence level is a linear covariate of the hostility of the martians.
+
+We also want to see if this relationship holds up over 3 time points.
+
+We need an ANCOVA to see if this theory pans out.
+
+</div>
+
+
+When running ANCOVA, try to identify each of the pieces. above we have
+
+response variable - hostility
+explanatory variable - tone of communication
+covariate - intelligence
+
+This will help you lay out the model more intuitively.
+
+```{r}
+#using fake data set that we do not have.
+#mars <-read.csv("martians.csv", header=T)
+
+
+#make sure data look ok
+str(mars)
+#tone is numeric - change to factor.
+mars$tone <-as.factor(mars$tone)
+head(mars) #check the first six rows
+dim(mars)  #check the dimensions of the data set
+```
+
+
+
+STEPS FOR ANCOVA
+```{r}
+
+
+#step 1 is to test for an interaction. If we have an interaction, there is no point in testing for an ANCOVA with main effects.
+#you can just run aov with the interaction only - it will still generate main effects with T1 SS, but the interaction is handled the same way.
+model1 <- aov(time1~intelligence*tone, data=mars)
+
+#step 2 explore the residuals
+#try the outliers package
+
+# turn residuals into a data frame
+### d <-data.frame(res=Res1, tone=mars$tone)
+
+# run cochran.test for outlying variance
+### cochran.test(res~tone)
+
+#if you save the results of the initial ANCOVA to an object called model1, you can plot the entire thing, and R will give you diagnostics.
+### plot(model1)
+
+
+#step 3 
+###  run multiple anovas across the three time points, treating them as an independent study.
+
+# IN homework 3, q3, run:
+# aov(START~biomass*tissue, data=kelp)
+
+################ NEVER DO THIS IN PRACTICE, UNLESS IT IS PURELY DIAGNOSTIC -
+####### TIME CANNOT BE TREATED AS A NUISANCE VARIABLE IN A LONGITUDINAL MODEL
+####### MOREOVER, THESE ARE MULTIPLE TESTS THAT ARE NOT ADJUSTED FOR TYPE 1 ERROR INFLATION
+
+# each time, test for interaction first. If it is significant, there is no need to run model version b, because the main effects become irrelevant
+model1a <-aov(Time1~tone * intelligence, data = mars)
+model1b <-aov(Time1~tone + intelligence, data = mars)
+
+
+
+model2a <-aov(Time2~tone * intelligence, data = mars)
+model2b <-aov(Time2~tone + intelligence, data = mars)
+
+model3a <-aov(Time3~tone * intelligence, data = mars)
+model3b <-aov(Time3~tone + intelligence, data = mars)
+
+
+```
+

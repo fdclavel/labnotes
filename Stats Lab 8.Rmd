@@ -1,0 +1,143 @@
+---
+title: "Stats Lab 8 - HW4 notes"
+author: "Fred Clavel"
+date: "March 5, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+
+---
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.green { background-color:#e6ffd0; border-radius: 5px; padding: 20px;}
+div.red { background-color:#ffe6f0; border-radius: 5px; padding: 20px;}
+div.warn { background-color:#ee1111; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px; font-variant:small-caps}
+div.safe { background-color:#008800; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px}
+div.data {background-color:#ddddee; border-radius: 5px; padding: 20px; font-family:monospace}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=F, message=F)
+```
+
+
+HW 4-
+
+### Question 2 
+
+-- use a multiple linear regression. You can do this stepwise if you'd like, in order to describe how each predictor makes the model fit better.
+
+Model Fitting using the cherry trees example from Lab 7
+
+How does each predictor variable influence cherry tree volume?
+
+Calculate a series of linear regressions to explain it.
+
+```{r}
+library(boot) #this package contains the trees data set
+library(ggplot2)
+library(dplyr)
+data(trees)
+#compute a girth:height ratio
+trees <- trees %>% mutate(GH_ratio = Girth/Height )
+head(trees)
+
+#before running the model, test the collinearity of the predictors, to see which model you should start with.
+
+#
+#model1 <- lm(Volume~height +GH_ratio + lc, data=trees)
+#AIC(model1)
+
+#model2 <- lm(Volume~height +GH_ratio, data=trees)
+#AIC(model2)
+
+```
+
+
+
+### Question 3: Maximum Likelihood (MaxLH) estimation
+
+This question includes negative log likelihood
+
+Check stats with Josh Stamer on Youtube (StatQuest) for an explanation of maximum likelihood. 
+Max Likelihood begins to take us into Bayesian territory, where we are calculating **the probability of a model given the data**<br>
+::*rather than the frequentist approach of finding the probability of the data given a model [typically the null model])*
+
+Maxmium likelihood is similar to bootstrapping, where an analysis involves fitting multiple models (that often contain multiple parameters) and seeing which one best fits.
+-> uses up a good deal of computing power.
+
+What is negative log likelihood (-LLH)?
+
+- Most optimization methods we use in computers are set up to search for minimum values rather than maximum values (so we are effectively just inverting the LH values we get from a MaxLH fitting procedure).
+
+- When *-LH* values become very close to zero, they become too small for computers to handle reliably, SO we take the log of the negative likelihood that will increase it to a size that is more manageable for computers. 
+-> Note that very small -LLH values are increasingly common and problematic as your sample size increases.
+
+### How to do MaxLH estimation in R
+
+```{r}
+library(stats4) #package for running MLH
+
+#dummy data
+set.seed(1001)
+N<- 100
+x<-runif(N)
+y<- 5*x+3+rnorm(N)
+
+
+#fit our data using OLS first for comparison
+fit<- lm(y~x)
+summary(fit)
+```
+
+```{r}
+#plot it.
+plot(x,y)
+abline(fit,col="red")
+```
+```{r}
+#Now do it using -LL
+
+#first set the negative log likelihood to a funciton
+NLL <-function(a,b,sigma) {
+  y.pred=a+(b*x)
+  LL=(dnorm(y,mean=y.pred,sd=sigma, log=T))
+  -sum(LL)
+  
+}
+
+#now we run it using mle
+?mle
+
+#run the MLE but note that this can take a lot of computing power in some cases.
+#the nelder-mead method is one of several that you can use to converge on a solution.
+
+fit2 <- mle(NLL, start=list(a=mean(y), b=0, sigma=sqrt(var(y))), method="Nelder-Mead")
+summary(fit2)
+```
+
+```{r}
+#we can look at the NLL estimate
+logLik(fit2)
+
+
+#Now we can compare the two models.
+fit$coefficients
+fit2@coef
+
+```
+
+### for running PCA...
+
+check out datacamp.com/community/tutorials/pca-analysis-r
+
+### For Q4 - Logistic Regresion is needed.
+
+
+### Bayesian Priors example
+
+Nothing to do with the HW, but if you want to learn more about this topic, check out:
+
+countbayesie.com/blog/2015/2/18/hans-solo-and-bayesian-priors

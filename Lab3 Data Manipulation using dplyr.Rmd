@@ -1,0 +1,227 @@
+---
+title: "Lab 3 - Data Manipulation Using dplyr"
+author: "Fred Clavel"
+date: "January 29, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+  
+---
+
+```{r setup, include=FALSE,}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+***
+***
+####CONTENTS:
+<br>
+1. [What is dplyr](#whatis)<br>
+2. [Using dplyr](#use)<br>
+3. [Pipelining in dplyr](#pipe)<br>
+4. The primary dplyr functions<br>
+  :::a) [FILTER](#filter)<br>
+  :::b) [SELECT](#select)<br>
+  :::c) [ARRANGE](#arr)<br>
+  :::d) [MUTATE](#mutate)<br>
+  :::e) [SUMMARISE](#summarise)<br>
+  
+<br>
+
+***
+***
+
+###First Step: Ensure you have the necessary packages installed and mounted.
+
+Mount dplyr and install the the hflights data to begin.
+```{r}
+library(dplyr)
+#install hflights if you haven't already, so you can mount the data set.
+#install.packages("hflights")
+```
+
+***
+
+###What is dplyr?{#whatis}
+
+Dplyr is part of the tidyverse - a suite of packages by Hadley Wickham that allow for
+more intuitive coding and data management practices.
+
+Tidyverse includes dplyr, tidyr, ggplot2, tibble, readr, purr, stringr, and forcats
+
+check www.tidyverse.org for more.
+
+People tend to be either Base R purists or tidyverse fans. Understanding both is useful.
+
+*PROTIP: Check the cheatsheets for easy reference.*
+*Go to Help->Cheatsheets in Rstudio for more.*
+
+***
+
+###Using dplyr{#use}
+
+dplyr streamlines your code a ton. It contains five basic verbs for data management:
+
+filter, select, arrange, mutate, and summarise (plus group_by).
+
+Let's proceed by example, using the hflights data set.
+
+```{r}
+library(hflights)
+head(hflights)
+#convert hflights from a tibble to a data frame.
+flights <-data.frame(hflights)
+
+#check the variable/column names in flights data set.
+ls(flights)
+```
+
+***
+***
+#### Using the Chaining or Pipelining method:{#pipe}
+
+Rather than nesting functions, you can use the %>% operator (or Ctrl+Shift+M) to type commands in nested steps that are more intuitive.
+
+```{r}
+#Pipelining with dplyr:
+
+#example - select information from the flights data set on unique carriers and departure delays, but only for flights that were at least an hour behind schedule (60 mins).  
+pipeline1<-flights %>% select(UniqueCarrier, DepDelay) %>% filter (DepDelay > 60)
+
+```
+
+
+
+
+**ONE BIG ADVANTAGE OF PIPELINING**
+
+You can select part of the pipeline to test out and make sure it works. In the above example, you can see whether JUST the select function is working properly, without continuing to filter the results.
+
+```{r}
+#EXAMPLE 2 - select columns indicating carrier, flight number, and departure time, filter so it only shows united airlines flights that left after 2pm.
+EXpipeline <- flights %>% 
+  select(UniqueCarrier, FlightNum, DepTime) %>% 
+  filter(UniqueCarrier == "UA", DepTime > 1400)
+head(EXpipeline)
+
+```
+
+***
+***
+
+###The Primary dplyr Functions
+<br>
+
+####The FILTER function:{#filter}
+
+Filter works just like it does in lots of other programs.
+
+```{r}
+#example filter data to only get departure times for American Airlines flights
+
+filter1<- flights %>% 
+  select(UniqueCarrier,DepTime) %>% 
+  filter(UniqueCarrier =="AA")
+head(filter1)
+```
+
+***
+
+####The SELECT function:{#select}
+
+The select function can be used to choose only a specific set of columns/variables. 
+
+It is often used in tandem with the "contains" function, which lets you search a particular vector for the presence of a specific value or string.
+
+```{r}
+#base R approach
+selectBASE<-flights[,c("DepTime", "ArrTime", "FlightNum")]
+
+#dplyr approach
+select1<-select(flights, DepTime, ArrTime, FlightNum)
+
+#use colon to select contiguous columns/variables
+#use 'contains' to select columns that contain a particular string
+
+select2<-select(flights, Year:DayofMonth, contains("Taxi"))
+
+#so selecting all columns that containn date and time info, along with those containing info about flight cancellations could be done using:
+
+
+EXselect<-select(flights, Month, DayofMonth, DayOfWeek, DepTime, ArrTime, contains("Cancel"))
+head(EXselect)
+
+```
+<br>
+***
+
+####The ARRANGE function:{#arr}
+
+We can reorder the rows that we want to see, based on some criterion/criteria.
+
+```{r}
+arrange1<-flights %>% 
+  select(UniqueCarrier, DepDelay) %>% 
+  arrange(DepDelay)
+
+#use the 'desc' qualifier to switch the arrangement to descending order. It defaults to ascending.
+
+#Example - select all AA flights that left in the afternoon on January 1st, and arrange by departure time.
+
+EXarrange<-flights %>% 
+  select(UniqueCarrier, DepTime, Month, DayofMonth) %>% 
+  filter(UniqueCarrier =="AA", Month == "1", DayofMonth == "1", DepTime > 1200) %>% 
+  arrange(DepTime)
+head(EXarrange)
+
+```
+
+***
+
+####The MUTATE function:{#mutate}
+
+You can use mutate to change variables and add new versions of them to the data frame.
+
+```{r}
+#Example - we can add a variable called Speed that's a function of distance and travel time of each flight.
+
+mutate1<-flights %>% 
+  select(Distance, AirTime) %>% 
+  mutate(Speed = Distance/AirTime*60)
+
+#to store the new variable, assign it to flights using the standard <- arrow function.
+flights2 <- flights %>%  mutate(Speed = Distance/AirTime*60)
+
+
+#Example - calculate total delay of each flight based on departure and arrival delay, and store it as a new value in flights data.
+
+flights3 <- flights %>% mutate(TotalDelay = DepDelay + ArrDelay)
+
+#check the new data.
+data.frame(head(flights3))
+```
+
+***
+
+####The SUMMARISE function:{#summarise}
+
+Summarise lets you group results by a particular criterion/criteria. It is very common to use 'summarise' in tandem with the group_by function.
+
+including na.rm-=T will remove any "NA" values prior to summarizing the data.
+
+```{r}
+#summarize by creating a table grouped by destination and then summarize each group by taking the mean of arrival delay.
+
+summarise1<-flights %>% 
+  group_by(Dest) %>% 
+  summarise (avg_delay = mean(ArrDelay, na.rm=T))
+
+#calculate the mean delay in arrival times for each month of the year
+
+EXsummarize<-flights %>% 
+  group_by(Month) %>% 
+  summarise (avg_delay = mean(ArrDelay, na.rm=T))
+head(EXsummarize)
+```
+

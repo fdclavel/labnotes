@@ -1,0 +1,75 @@
+---
+title: "Lab2 - For-Loop Review"
+author: "Fred Clavel"
+date: "January 22, 2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+SIO 272 Homework questions:
+-subject line "statsHW1"
+
+Review: Writing FOR Loops
+
+Using a simulaiton to generate a distribution based on a fake test statistic. Kayla's test. The equation is:
+ = sum(Z*10)^2
+where Z is the normal distribution (can be specified using th rnorm function below)
+
+Let's start with empty vectors to put the results into first.
+```{r}
+#generate empty vectors to place results from 1000 simulations
+#the rep() function makes it easy to create vectors of (x,y) dimensions. Using the NA placeholder tells R to fill the vector with empty spaces, and will default to 1 in the case of the rep() function.
+norm1 <- rep(NA,1000)
+norm3 <- rep(NA,1000)
+norm30 <- rep(NA,1000)
+norm100 <- rep(NA,1000)
+
+#write a for loop that simulates these draws 1000 times and places them into the empty vectors.
+for(i in 1:length(norm1)){
+norm1[i] <- sum(rnorm(1,m=0,sd=1)*10)^2    
+norm3[i] <- sum(rnorm(3,m=0,sd=1)*10)^2   
+norm30[i] <- sum(rnorm(30,m=0,sd=1)*10)^2   
+norm100[i] <- sum(rnorm(100,m=0,sd=1)*10)^2   
+}
+```
+
+
+Generate a plot to see these.
+```{r}
+#OPTION 1 - use the PLOT function and draw lines over the first one.
+plot(density(norm1), col='blue', main="Kayla's distribution", lwd=2)
+lines(density(norm3),col='red',lwd=2)
+lines(density(norm30),col='black',lwd=2)
+lines(density(norm100),col='green',lwd=2)
+
+```
+
+
+
+
+Formulas in R markdown
+
+X-bar
+$\overline{X}$
+
+Y-hat
+$\hat{Y}$
+
+Basic Fraction 
+$\frac{X}{Y}$
+
+Formula Fraction
+$\frac{{X} - {\overline{X}}} {sd}$
+
+
+```{r}
+
+
+
+```
+
+
+

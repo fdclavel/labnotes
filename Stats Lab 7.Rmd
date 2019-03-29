@@ -1,0 +1,85 @@
+---
+title: "Stats Lab 7 - Workflow and Organization"
+author: "Fred Clavel"
+date: "February 26, 2019"
+output:
+  html_document:
+      includes:
+          before_body: header.html
+          after_body: footer.html
+
+---
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.green { background-color:#e6ffd0; border-radius: 5px; padding: 20px;}
+div.red { background-color:#ffe6f0; border-radius: 5px; padding: 20px;}
+div.warn { background-color:#ee1111; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px; font-variant:small-caps}
+div.safe { background-color:#008800; color:#ffffff; font-weight:bold; border-radius: 5px; padding: 20px}
+div.data {background-color:#ddddee; border-radius: 5px; padding: 20px; font-family:monospace}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=F, message=F)
+```
+
+### Workflow and Code Organization Tips
+***
+
+Using project files within a folder is generally a good idea, because it saves the trouble of including a working directory set function. 
+
+Things to avoid however, within the folder:
+
+:: **User/Docs/R/Analysis Scripts/** <br>
+::<br>
+:::: analysis 6.r <br>
+:::: analysis 6 v2.r <br>
+:::: analysis 6 v2 FINAL.r <br>
+:::: analysis 6 v2 FINAL revised.r <br>
+
+
+This can clutter up a folder really quickly. A better approach is to use *version control*. The best and most common platform for this is **GitHub.** Allows for very easy sharing and collaborative editing of code files as well. Try http://happygitwithr.com for tutorials on how to connect R to GitHub. It allows R to easily push and pull files between your GitHub repository.
+
+<br>
+
+<div class = "green">
+**PROTIP - R Users powerpoint by Chase James is very useful for organizational tips. Much of it is replicated in Kayla's lab slides for today.**
+</div>
+
+Things to ask yourself when managing files and scripts, etc.:
+
+::: Where am I going to save my R projects? <br>
+::: What am I trying to accomplish? <br>
+
+#### Saving Projects
+
+Once you create the project FOLDER, you want to have a separate folder within it that includes dedicated spaces for: 
+
+::: data <br>
+::: output <br>
+::: figures <br>
+
+It is also useful to have separate files (probably scripts, which can all be aggregated into a single markdown file at the end) within your project folder that handle each of the following three major steps of data analysis:
+
+::: 1 data processing - reading in your data files <br>
+::: 2 analysis steps  - getting results of your analyses <br>
+::: 3 figures - generating any data visualizations  <br>
+
+<div class="green">
+**PROTIP - Generally start all scripts by mounting your packages first.**
+</div>
+
+<br>
+
+#### Working within your script files
+
+Start by mounting packages, then running through the process of importing and assembling/cleaning all data files needed for a data run
+
+It is **very useful** to annotate heavily in R, as in any other programming environment. It allows you to understand what you are doing at each step along the way.
+
+It is also very useful to write data processing steps into functions. It is intimidating at first, but it can greatly expedite your future data runs, and it makes your code very shareable/reproducible because others can just use your function.
+
+<div class = "warn">
+
+For others to re-use your functions, you will need to save and share the `.Rdata` file that is associated with your project. This file will contain the initial steps that include creating the functions and will mount or install all package dependencies as needed.
+
+</div>
